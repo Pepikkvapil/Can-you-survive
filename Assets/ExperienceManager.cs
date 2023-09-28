@@ -11,6 +11,10 @@ public class ExperienceManager : MonoBehaviour
 
     public TMP_Text levelText;
 
+    public TMP_Text killedText;
+
+    public int killedEnemies = 0;
+
     public int maximumExp = 20;
 
     public int currentExp = 0;
@@ -19,7 +23,6 @@ public class ExperienceManager : MonoBehaviour
 
     public int currentLevel = 0;
 
-    //Jen jeden Manager
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
@@ -34,15 +37,18 @@ public class ExperienceManager : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         levelText.text = "Level: " + currentLevel.ToString();
+        killedText.text = "Enemies killed: " + killedEnemies.ToString();
     }
 
     void Update()
     {
        GetCurrentFill(currentExp);
         levelText.text = "Level: " + currentLevel.ToString();
+        killedText.text = "Enemies killed: " + killedEnemies.ToString();
     }
 
     public void AddExperience(int amount)
@@ -52,6 +58,11 @@ public class ExperienceManager : MonoBehaviour
         {
             LevelUp();
         }
+    }
+
+    public void AddKilled()
+    {
+        killedEnemies++;
     }
 
     void GetCurrentFill(float test)
