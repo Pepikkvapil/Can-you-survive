@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5112233531255314225, guid: 181fc1dbb55f7a84488f39c16f14a8fe, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7303378327432035042, guid: 181fc1dbb55f7a84488f39c16f14a8fe, type: 3}
       propertyPath: m_Name
       value: Sprite_Experience_Gem Variant

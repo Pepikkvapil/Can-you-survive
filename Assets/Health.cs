@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
+    public Color redColor = Color.red; // Set the desired red color
+    public float redDuration = 0.5f; // Adjust the duration as needed
 
     [SerializeField] private int health = 100;
 
@@ -42,10 +45,26 @@ public class Health : MonoBehaviour
 
         this.health -= amount;
 
+        // Change the material to red temporarily
+        entitySpriteRenderer.color = redColor;
+
+        // Start a coroutine to revert the color back to the original material
+        StartCoroutine(RevertColor());
+
+
         if (health <= 0)
         {
             Die();
         }
+    }
+
+    private IEnumerator RevertColor()
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(redDuration);
+
+        // Revert the sprite color back to the original color (usually white)
+        entitySpriteRenderer.color = Color.white; // You can set it to the original color
     }
 
     public void Heal(int amount)

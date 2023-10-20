@@ -44,6 +44,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(playerStamina <= 0)
+        {
+            weAreSprinting = false;
+        }
+
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -108,15 +113,6 @@ public class PlayerController : MonoBehaviour
     //    }
     //}
 
-    public void StaminaDash()
-    {
-        if (playerStamina >= (maxStamina * dashCost / maxStamina))
-        {
-            playerStamina -= dashCost;
-
-            UpdateStamina(1);
-        }
-    }
 
     void UpdateStamina(int value)
     {
