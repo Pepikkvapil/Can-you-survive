@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    
+    public int enemyDamage;
+
     public float playerStamina = 100.0f;
 
 
@@ -24,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Image staminaProgressUI = null;
     [SerializeField] private CanvasGroup sliderCanvasGroup = null;
+
+    public GameManagerScript gameManager;
 
 
     Vector2 _Movement;
@@ -91,6 +94,17 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            //Damage(10);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            // Heal(10);
+        }
+
     }
 
 
@@ -127,4 +141,78 @@ public class PlayerController : MonoBehaviour
             sliderCanvasGroup.alpha = 1;
         }
     }
+
+    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
+    public Color redColor = Color.red; // Set the desired red color
+    public float redDuration = 0.5f; // Adjust the duration as needed
+
+    [SerializeField] private int health = 100;
+
+    private int MAX_HEALTH = 100;
+
+    public void Damage(int amount)
+    {
+
+        this.health -= amount;
+
+        // Change the material to red temporarily
+        entitySpriteRenderer.color = redColor;
+
+        // Start a coroutine to revert the color back to the original material
+        StartCoroutine(RevertColor());
+
+
+        if (health <= 0 && !isDead)
+        {
+            isDead = true;
+            Die();
+        }
+    }
+
+    private IEnumerator RevertColor()
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(redDuration);
+
+        // Revert the sprite color back to the original color (usually white)
+        entitySpriteRenderer.color = Color.white; // You can set it to the original color
+    }
+
+    public void Heal(int amount)
+    {
+        if (amount < 0)
+        {
+            throw new System.ArgumentOutOfRangeException("Cannot have negative healing");
+        }
+
+        bool wouldBeOverMaxHealth = health + amount > MAX_HEALTH;
+
+        if (wouldBeOverMaxHealth)
+        {
+            this.health = MAX_HEALTH;
+        }
+        else
+        {
+            this.health += amount;
+        }
+    }
+
+    private bool isDead;
+
+    private void Die()
+    {
+        Debug.Log("DEAD!");
+        gameManager.gameOver();
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Damage(enemyDamage);
+        }
+    }
+
+
 }

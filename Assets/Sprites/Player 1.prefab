@@ -209,14 +209,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5138632909221059942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.7201, y: -0.7201, z: 0}
+  m_LocalScale: {x: 0.775, y: 0.775, z: 0.775}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 243710585403408855}
   - {fileID: 8215555159487520233}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3588354950704042879
 SpriteRenderer:
@@ -429,6 +429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1fc9a33d7302f42835b8ef9454f64d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyDamage: 0
   playerStamina: 100
   maxStamina: 100
   dashCost: 20
@@ -440,6 +441,11 @@ MonoBehaviour:
   normalRunSpeed: 4
   staminaProgressUI: {fileID: 0}
   sliderCanvasGroup: {fileID: 0}
+  gameManager: {fileID: 0}
+  entitySpriteRenderer: {fileID: 0}
+  redColor: {r: 1, g: 0, b: 0, a: 1}
+  redDuration: 0.5
+  health: 100
 --- !u!1 &8489708347783211562
 GameObject:
   m_ObjectHideFlags: 0
