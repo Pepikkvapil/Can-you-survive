@@ -56,6 +56,10 @@ public class BulletScript : MonoBehaviour
             health.Damage(damage);
             Destroy(gameObject);
         }
+        else if (other.CompareTag("Walls"))
+        {
+            Destroy(gameObject);
+        }
     }
 
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public int enemyDamage;
+    public int enemyDamage = 20;
 
     public float playerStamina = 100.0f;
 
@@ -26,12 +26,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Image staminaProgressUI = null;
     [SerializeField] private CanvasGroup sliderCanvasGroup = null;
 
+    [SerializeField] private Image HPProgressUI = null;
+
     public GameManagerScript gameManager;
 
 
     Vector2 _Movement;
 
     Rigidbody2D _Rigidbody;
+
+    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
+    public Color redColor = Color.red; // Set the desired red color
+    public float redDuration = 0.5f; // Adjust the duration as needed
+
+    [SerializeField] private int health = 100;
+
+    public int MAX_HEALTH = 100;
+
+    private float max_hp = 100;
 
     private void Awake()
     {
@@ -47,7 +59,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if(playerStamina <= 0)
+        UpdateHP();
+
+        if (playerStamina <= 0)
         {
             weAreSprinting = false;
         }
@@ -108,26 +122,6 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
-
-    //public void Sprinting()
-    //{
-    //    if (hasRegenerated)
-    //    {
-    //        weAreSprinting = true;
-    //        playerStamina -= staminaDrain * Time.deltaTime;
-    //        UpdateStamina(1);
-
-    //        if (playerStamina <= 0)
-    //        {
-    //            hasRegenerated = false;
-
-    //            sliderCanvasGroup.alpha = 0;
-    //        }
-    //    }
-    //}
-
-
     void UpdateStamina(int value)
     {
         staminaProgressUI.fillAmount = playerStamina / maxStamina;
@@ -142,19 +136,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
-    public Color redColor = Color.red; // Set the desired red color
-    public float redDuration = 0.5f; // Adjust the duration as needed
+    void UpdateHP()
+    {
+        HPProgressUI.fillAmount = health / max_hp;
+    }
 
-    [SerializeField] private int health = 100;
 
-    private int MAX_HEALTH = 100;
 
     public void Damage(int amount)
     {
 
         this.health -= amount;
-
         // Change the material to red temporarily
         entitySpriteRenderer.color = redColor;
 
