@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+
+
     public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
     public Color redColor = Color.red; // Set the desired red color
     public float redDuration = 0.5f; // Adjust the duration as needed
@@ -89,6 +91,8 @@ public class Health : MonoBehaviour
     private void Die()
     {
         ExperienceManager.Instance.AddKilled();
+
+        // Destroy the enemy or perform other cleanup
         Debug.Log("DEAD!");
         Destroy(gameObject);
     }
