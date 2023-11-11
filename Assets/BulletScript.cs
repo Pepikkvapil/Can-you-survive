@@ -9,8 +9,8 @@ public class BulletScript : MonoBehaviour
     private Rigidbody2D rb;
     public float force;
 
-    private int damage = 5;
-
+    private int baseDamage = 5;
+    public static float damageMultiplier = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -50,10 +50,10 @@ public class BulletScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.GetComponent<Health>() != null && other.CompareTag("Enemy"))
+        if (other.GetComponent<Health>() != null && other.CompareTag("Enemy"))
         {
             Health health = other.GetComponent<Health>();
-            health.Damage(damage);
+            health.Damage((int)(baseDamage * damageMultiplier)); // Apply the damage multiplier
             Destroy(gameObject);
         }
         else if (other.CompareTag("Walls"))
@@ -62,6 +62,9 @@ public class BulletScript : MonoBehaviour
         }
     }
 
-
+    public static void IncreaseDamageMultiplier(float amount)
+    {
+        damageMultiplier += amount;
+    }
 
 }

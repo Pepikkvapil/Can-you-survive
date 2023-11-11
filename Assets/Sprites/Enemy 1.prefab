@@ -103,7 +103,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
-  Player: {fileID: 3392042051334140312, guid: 1d1ad2eb908be52419b9bf5e889ae119, type: 3}
 --- !u!61 &3771498579291766371
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -192,6 +191,7 @@ MonoBehaviour:
   redColor: {r: 1, g: 0, b: 0, a: 1}
   redDuration: 1
   health: 100
+  xpPrefab: {fileID: 4254291542136982112, guid: 69c959b02c66be244a7688f9a0ba980a, type: 3}
 --- !u!61 &3915820913563124486
 BoxCollider2D:
   m_ObjectHideFlags: 0

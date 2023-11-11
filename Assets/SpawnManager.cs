@@ -2,21 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SpawnManager : MonoBehaviour
 {
-    public static SpawnManager Instance;
     public TMP_Text waveText;
+    public GameObject enemyPrefab;
 
+    [SerializeField] private float spawnMargin = 10.0f; // Margin outside camera bounds for spawning enemies
+    [SerializeField] private int maxEnemiesPerWave = 3; // Maximum number of enemies per wave
+    [SerializeField] private int totalWaves = 5; // Total number of waves
 
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private int maxEnemiesPerWave = 3; // Set the maximum number of enemies per wave.
-    [SerializeField] private int totalWaves = 5; // Set the total number of waves.
-
-    private int currentWave = 0; // Tracks the current wave.
-    private bool isWaveActive = false; // Tracks whether a wave is currently active.
+    private int currentWave = 0; // Tracks the current wave
+    private bool isWaveActive = false; // Tracks if a wave is currently active
 
     private void Start()
     {
@@ -24,19 +21,15 @@ public class SpawnManager : MonoBehaviour
     }
 
     private void Update()
-    {        
+    {
         GameObject[] totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-
         int enemiesRemaining = totalEnemies.Length;
 
-        if (isWaveActive)
+        if (isWaveActive && enemiesRemaining <= 0)
         {
-            // Check if all enemies from the current wave are defeated.
-            if (enemiesRemaining <= 0)
-            {
-                isWaveActive = false;
-                StartNextWave();
-            }
+            // All enemies from the current wave are defeated
+            isWaveActive = false;
+            StartNextWave();
         }
 
         Debug.Log("Enemies Remaining: " + enemiesRemaining); // Debug log for remaining enemies
@@ -45,23 +38,15 @@ public class SpawnManager : MonoBehaviour
     private void StartWave()
     {
         currentWave++;
-        Debug.Log("Wave " + currentWave);
-        waveText.text = "Wave" + currentWave;
+        waveText.text = "Wave " + currentWave;
 
         for (int i = 0; i < maxEnemiesPerWave; i++)
         {
-            Transform selectedSpawnPoint = GetClosestSpawnPoint();
-
-            if (selectedSpawnPoint != null)
-            {
-                Instantiate(enemyPrefab, selectedSpawnPoint.position, Quaternion.identity);
-            }
+            Vector3 spawnPosition = GetSpawnPositionOutsideCameraView();
+            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         }
 
-        
-
-        // Mark the wave as active.
-        isWaveActive = true;
+        isWaveActive = true; // Mark the wave as active
     }
 
     private void StartNextWave()
@@ -72,39 +57,55 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    private Transform GetClosestSpawnPoint()
+    private Vector3 GetSpawnPositionOutsideCameraView()
     {
-        Transform closestSpawnPoint = null;
-        float closestDistance = float.MaxValue;
+        Camera mainCamera = Camera.main;
+        Vector3 spawnPosition = Vector3.zero;
+        bool validPosition = false;
 
-        foreach (Transform spawnPoint in spawnPoints)
+        while (!validPosition)
         {
-            // Check if the spawn point collides with the player using the "MainCamera" tag.
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(spawnPoint.position, 0.2f);
+            spawnPosition = GenerateRandomPositionAroundCamera(mainCamera, spawnMargin);
 
-            bool collidesWithPlayer = false;
-            foreach (var collider in colliders)
+            // Check for overlap with walls using a Physics check
+            if (!Physics2D.OverlapCircle(spawnPosition, 0.5f)) // Adjust the radius as needed
             {
-                if (collider.CompareTag("MainCamera"))
-                {
-                    collidesWithPlayer = true;
-                    break;
-                }
-            }
-
-            // If it doesn't collide with the player and is closer than the current closest spawn point, update the selection.
-            if (!collidesWithPlayer)
-            {
-                float distanceToSpawnPoint = Vector3.Distance(transform.position, spawnPoint.position);
-
-                if (distanceToSpawnPoint < closestDistance)
-                {
-                    closestSpawnPoint = spawnPoint;
-                    closestDistance = distanceToSpawnPoint;
-                }
+                validPosition = true;
             }
         }
 
-        return closestSpawnPoint;
+        return spawnPosition;
     }
+
+    private Vector3 GenerateRandomPositionAroundCamera(Camera camera, float margin)
+    {
+        // Determine the camera's bounds
+        float cameraHeight = 2f * camera.orthographicSize;
+        float cameraWidth = cameraHeight * camera.aspect;
+        float halfCameraWidth = cameraWidth * 0.5f;
+        float halfCameraHeight = cameraHeight * 0.5f;
+
+        // Get the camera's position
+        Vector3 cameraPosition = camera.transform.position;
+
+        // Generate a random point around the camera bounds
+        float x = 0f;
+        float y = 0f;
+
+        if (Random.value > 0.5f)
+        {
+            // Spawn at a random point along the horizontal margin
+            x = cameraPosition.x + (Random.value > 0.5f ? halfCameraWidth + margin : -halfCameraWidth - margin);
+            y = Random.Range(cameraPosition.y - halfCameraHeight - margin, cameraPosition.y + halfCameraHeight + margin);
+        }
+        else
+        {
+            // Spawn at a random point along the vertical margin
+            x = Random.Range(cameraPosition.x - halfCameraWidth - margin, cameraPosition.x + halfCameraWidth + margin);
+            y = cameraPosition.y + (Random.value > 0.5f ? halfCameraHeight + margin : -halfCameraHeight - margin);
+        }
+
+        return new Vector3(x, y, 0); // Assuming a 2D game
+    }
+
 }

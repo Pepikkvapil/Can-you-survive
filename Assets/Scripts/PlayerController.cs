@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -7,43 +6,32 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public int enemyDamage = 20;
-
     public float playerStamina = 100.0f;
-
+    public static float speedMultiplier = 1f;
 
     [SerializeField] private float maxStamina = 100.0f;
     [SerializeField] private float dashCost = 20;
-
-    [HideInInspector] public bool hasRegenerated = true;
-    [HideInInspector] public bool weAreSprinting = false;
-
     [SerializeField] private float staminaDrain = 0.5f;
     [SerializeField] private float staminaRegen = 0.5f;
-
     [SerializeField] private int RunSpeed = 6;
     [SerializeField] private int normalRunSpeed = 4;
-
     [SerializeField] private Image staminaProgressUI = null;
     [SerializeField] private CanvasGroup sliderCanvasGroup = null;
-
     [SerializeField] private Image HPProgressUI = null;
-
     public GameManagerScript gameManager;
 
-
-    Vector2 _Movement;
-
-    Rigidbody2D _Rigidbody;
-
-    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
-    public Color redColor = Color.red; // Set the desired red color
-    public float redDuration = 0.5f; // Adjust the duration as needed
+    public SpriteRenderer entitySpriteRenderer;
+    public Color redColor = Color.red;
+    public float redDuration = 0.5f;
 
     [SerializeField] private int health = 100;
-
     public int MAX_HEALTH = 100;
 
-    private float max_hp = 100;
+    private Vector2 _Movement;
+    private Rigidbody2D _Rigidbody;
+    private bool hasRegenerated = true;
+    private bool weAreSprinting = false;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -55,8 +43,6 @@ public class PlayerController : MonoBehaviour
         _Movement = value.Get<Vector2>();
     }
 
-    
-
     void Update()
     {
         UpdateHP();
@@ -66,93 +52,61 @@ public class PlayerController : MonoBehaviour
             weAreSprinting = false;
         }
 
-
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             weAreSprinting = true;
         }
-        else if(Input.GetKeyUp(KeyCode.LeftShift))
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             weAreSprinting = false;
         }
-        
-        if(weAreSprinting)
+
+        if (weAreSprinting)
         {
-            _Rigidbody.velocity = _Movement * RunSpeed;
+            _Rigidbody.velocity = _Movement * RunSpeed * speedMultiplier;
             playerStamina -= staminaDrain * Time.deltaTime;
             UpdateStamina(1);
 
             if (playerStamina <= 0)
             {
                 hasRegenerated = false;
-
                 sliderCanvasGroup.alpha = 0;
             }
         }
         else
         {
-            _Rigidbody.velocity = _Movement * normalRunSpeed;
+            _Rigidbody.velocity = _Movement * normalRunSpeed * speedMultiplier;
         }
 
-        if (!weAreSprinting)
+        if (!weAreSprinting && playerStamina <= maxStamina - 0.01)
         {
-            if (playerStamina <= maxStamina - 0.01)
-            {
-                playerStamina += staminaRegen * Time.deltaTime;
-                UpdateStamina(1);
+            playerStamina += staminaRegen * Time.deltaTime;
+            UpdateStamina(1);
 
-                if (playerStamina >= maxStamina)
-                {
-                    sliderCanvasGroup.alpha = 0;
-                    hasRegenerated = true;
-                }
+            if (playerStamina >= maxStamina)
+            {
+                sliderCanvasGroup.alpha = 0;
+                hasRegenerated = true;
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            //Damage(10);
-        }
-
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            // Heal(10);
-        }
-
     }
-
 
     void UpdateStamina(int value)
     {
         staminaProgressUI.fillAmount = playerStamina / maxStamina;
-
-        if (value == 0)
-        {
-            sliderCanvasGroup.alpha = 0;
-        }
-        else
-        {
-            sliderCanvasGroup.alpha = 1;
-        }
+        sliderCanvasGroup.alpha = value == 0 ? 0 : 1;
     }
 
     void UpdateHP()
     {
-        HPProgressUI.fillAmount = health / max_hp;
+        HPProgressUI.fillAmount = (float)health / MAX_HEALTH;
     }
-
-
 
     public void Damage(int amount)
     {
-
-        this.health -= amount;
-        // Change the material to red temporarily
+        health -= amount;
         entitySpriteRenderer.color = redColor;
-
-        // Start a coroutine to revert the color back to the original material
         StartCoroutine(RevertColor());
-
 
         if (health <= 0 && !isDead)
         {
@@ -163,11 +117,8 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator RevertColor()
     {
-        // Wait for the specified duration
         yield return new WaitForSeconds(redDuration);
-
-        // Revert the sprite color back to the original color (usually white)
-        entitySpriteRenderer.color = Color.white; // You can set it to the original color
+        entitySpriteRenderer.color = Color.white;
     }
 
     public void Heal(int amount)
@@ -177,19 +128,9 @@ public class PlayerController : MonoBehaviour
             throw new System.ArgumentOutOfRangeException("Cannot have negative healing");
         }
 
-        bool wouldBeOverMaxHealth = health + amount > MAX_HEALTH;
-
-        if (wouldBeOverMaxHealth)
-        {
-            this.health = MAX_HEALTH;
-        }
-        else
-        {
-            this.health += amount;
-        }
+        health = Mathf.Min(health + amount, MAX_HEALTH);
+        UpdateHP();
     }
-
-    private bool isDead;
 
     private void Die()
     {
@@ -206,5 +147,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Method to increase the player's maximum health
+    public void IncreaseMaxHealth(int increaseAmount)
+    {
+        MAX_HEALTH += increaseAmount;
+        health += increaseAmount; // Also increase the current health
+        UpdateHP(); // Update the health UI to reflect the new maximum
+    }
 
+    public void IncreaseSpeedMultiplier(float amount)
+    {
+        speedMultiplier += amount;
+    }
 }

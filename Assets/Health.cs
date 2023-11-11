@@ -14,6 +14,8 @@ public class Health : MonoBehaviour
 
     [SerializeField] private int health = 100;
 
+    [SerializeField] private GameObject xpPrefab;
+
     private int MAX_HEALTH = 100;
  
 
@@ -56,6 +58,7 @@ public class Health : MonoBehaviour
 
         if (health <= 0)
         {
+            DropXP();
             Die();
         }
     }
@@ -88,6 +91,15 @@ public class Health : MonoBehaviour
         }
     }
 
+    private void DropXP()
+    {
+        if (xpPrefab != null)
+        {
+            // Instantiate the XP prefab at the enemy's position
+            Instantiate(xpPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
     private void Die()
     {
         ExperienceManager.Instance.AddKilled();
@@ -96,4 +108,6 @@ public class Health : MonoBehaviour
         Debug.Log("DEAD!");
         Destroy(gameObject);
     }
+
+
 }
