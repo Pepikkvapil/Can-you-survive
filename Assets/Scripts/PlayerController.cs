@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -32,6 +33,12 @@ public class PlayerController : MonoBehaviour
     private bool hasRegenerated = true;
     private bool weAreSprinting = false;
     private bool isDead = false;
+
+    public GameObject bookPrefab; // Assign the book prefab in the Unity Editor
+    public Transform firingPointer; // Assign your firing pointer GameObject in the Unity Editor
+    private List<GameObject> books = new List<GameObject>();
+    public float bookDistance = 5f; // Distance of books from the firing pointer
+    public int maxBooks = 2; // Start with 2 books
 
     private void Awake()
     {
@@ -88,6 +95,45 @@ public class PlayerController : MonoBehaviour
                 sliderCanvasGroup.alpha = 0;
                 hasRegenerated = true;
             }
+        }
+    }
+
+    public void AddBook()
+    {
+        // Instantiate a new book
+        GameObject newBook = Instantiate(bookPrefab, firingPointer.position, Quaternion.identity, firingPointer);
+
+        // Add the new book to the list
+        books.Add(newBook);
+
+        // Update the positions of all books
+        UpdateBookPositions();
+    }
+
+    private void UpdateBookPositions()
+    {
+        float angleStep = 360f / books.Count;
+        for (int i = 0; i < books.Count; i++)
+        {
+            // Calculate the angle and position for each book
+            float angle = angleStep * i;
+            Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.up;
+            books[i].transform.localPosition = direction * bookDistance;
+        }
+    }
+
+
+
+    public void UpgradeBookWeapon()
+    {
+        if(books.Count == 0)
+        {
+            AddBook();
+        }
+        if (books.Count != 0)
+        {
+            maxBooks++;
+            AddBook();
         }
     }
 

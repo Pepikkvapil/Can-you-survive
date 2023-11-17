@@ -7,6 +7,7 @@ public class SpawnManager : MonoBehaviour
 {
     public TMP_Text waveText;
     public GameObject enemyPrefab;
+    public PlayerController playerController;
 
     [SerializeField] private float spawnMargin = 10.0f; // Margin outside camera bounds for spawning enemies
     [SerializeField] private int maxEnemiesPerWave = 3; // Maximum number of enemies per wave
