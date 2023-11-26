@@ -1,0 +1,99 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.AI;
+
+public class Enemy : MonoBehaviour
+{
+
+
+    public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
+    public Color redColor = Color.red; // Set the desired red color
+    public float redDuration = 0.5f; // Adjust the duration as needed
+
+    [SerializeField] private int health = 100;
+
+    [SerializeField] private GameObject xpPrefab;
+
+
+    public float speed = 2f;
+
+    public Transform player;
+    public NavMeshAgent agent;
+
+    private void Start()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        // Check if the playerObject is not null before accessing its transform
+        if (playerObject != null)
+        {
+            player = playerObject.transform;
+        }
+
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        agent.SetDestination(player.position);
+    }
+
+    public void Damage(int amount)
+    {
+        if (amount < 0)
+        {
+            throw new System.ArgumentOutOfRangeException("Cannot have negative Damage");
+        }
+
+        this.health -= amount;
+
+        // Change the material to red temporarily
+        entitySpriteRenderer.color = redColor;
+
+        // Start a coroutine to revert the color back to the original material
+        StartCoroutine(RevertColor());
+
+
+        if (health <= 0)
+        {
+            DropXP();
+            Die();
+        }
+    }
+
+    private IEnumerator RevertColor()
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(redDuration);
+
+        // Revert the sprite color back to the original color (usually white)
+        entitySpriteRenderer.color = Color.white; // You can set it to the original color
+    }
+
+    private void DropXP()
+    {
+        if (xpPrefab != null)
+        {
+            // Instantiate the XP prefab at the enemy's position
+            Instantiate(xpPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    protected virtual void Die()
+    {
+        ExperienceManager.Instance.AddKilled();
+
+        // Destroy the enemy or perform other cleanup
+        Debug.Log("DEAD!");
+        Destroy(gameObject);
+    }
+
+
+}

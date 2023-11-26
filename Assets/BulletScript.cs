@@ -50,9 +50,9 @@ public class BulletScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponent<Health>() != null && other.CompareTag("Enemy"))
+        if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy"))
         {
-            Health health = other.GetComponent<Health>();
+            Enemy health = other.GetComponent<Enemy>();
             health.Damage((int)(baseDamage * damageMultiplier)); // Apply the damage multiplier
             Destroy(gameObject);
         }

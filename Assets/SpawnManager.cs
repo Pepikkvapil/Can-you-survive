@@ -6,7 +6,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public TMP_Text waveText;
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefabs; // Array to hold different enemy prefabs
     public PlayerController playerController;
 
     [SerializeField] private float spawnMargin = 10.0f; // Margin outside camera bounds for spawning enemies
@@ -44,11 +44,18 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < maxEnemiesPerWave; i++)
         {
             Vector3 spawnPosition = GetSpawnPositionOutsideCameraView();
-            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+
+            // Randomly pick an enemy type
+            int randomIndex = Random.Range(0, enemyPrefabs.Length);
+            GameObject chosenEnemyPrefab = enemyPrefabs[randomIndex];
+
+            // Instantiate the chosen enemy at the calculated spawn position
+            Instantiate(chosenEnemyPrefab, spawnPosition, Quaternion.identity);
         }
 
         isWaveActive = true; // Mark the wave as active
     }
+
 
     private void StartNextWave()
     {
@@ -106,7 +113,7 @@ public class SpawnManager : MonoBehaviour
             y = cameraPosition.y + (Random.value > 0.5f ? halfCameraHeight + margin : -halfCameraHeight - margin);
         }
 
-        return new Vector3(x, y, 0); // Assuming a 2D game
+        return new Vector3(x, y, 0); 
     }
 
 }

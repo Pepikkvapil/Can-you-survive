@@ -32,7 +32,7 @@ public class BookWeapon : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             // Deal damage to the enemy
-            other.GetComponent<Health>()?.Damage(damage);
+            other.GetComponent<Enemy>()?.Damage(damage);
             // Optionally destroy the book or create some visual effect
         }
     }
