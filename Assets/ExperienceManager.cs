@@ -18,6 +18,8 @@ public class ExperienceManager : MonoBehaviour
     public Button speedButton; // Assign in the Unity Editor
     public Button healthButton; // Assign in the Unity Editor
     public Button bookButton; // Assign in the Unity Editor
+    public Button rocketButton;
+    public Button spellShieldButton;
 
     public int maximumExp = 20;
     public int currentExp = 0;
@@ -29,7 +31,9 @@ public class ExperienceManager : MonoBehaviour
         UpgradeType.OverallDamage,
         UpgradeType.Speed,
         UpgradeType.Health,
-        UpgradeType.Book
+        UpgradeType.Book,
+        UpgradeType.Rocket,
+        UpgradeType.SpellShield
     };
 
     private void Awake()
@@ -94,6 +98,8 @@ public class ExperienceManager : MonoBehaviour
         speedButton.gameObject.SetActive(false);
         healthButton.gameObject.SetActive(false);
         bookButton.gameObject.SetActive(false);
+        rocketButton.gameObject.SetActive(false);
+        spellShieldButton.gameObject.SetActive(false);
 
         foreach (var upgrade in selectedUpgrades)
         {
@@ -110,6 +116,12 @@ public class ExperienceManager : MonoBehaviour
                     break;
                 case UpgradeType.Book:
                     bookButton.gameObject.SetActive(true);
+                    break;
+                case UpgradeType.Rocket:
+                    rocketButton.gameObject.SetActive(true);
+                    break;
+                case UpgradeType.SpellShield:
+                    spellShieldButton.gameObject.SetActive(true);
                     break;
             }
         }
@@ -141,13 +153,20 @@ public class ExperienceManager : MonoBehaviour
                 playerController.IncreaseSpeedMultiplier(0.1f);
                 break;
             case "Damage":
-                BulletScript.IncreaseDamageMultiplier(0.2f); // Increase by 20% for example
+                Enemy.IncreaseDamageMultiplier(0.1f); // Increase by 20% for example
                 break;
             case "Health":
                 playerController.IncreaseMaxHealth(20);
                 break;
             case "Book":
                 playerController.UpgradeBookWeapon();
+                break;
+            case "Rockets":
+                playerController.rocketsWeapon.UpgradeRocketWeapon();
+                playerController.EnableRocketWeapon();
+                break;
+            case "SpellShield":
+                playerController.EnableSpellShieldUpgrade();
                 break;
         }
 
@@ -166,5 +185,7 @@ public enum UpgradeType
     OverallDamage,
     Speed,
     Health,
-    Book
+    Book,
+    Rocket,
+    SpellShield
 }

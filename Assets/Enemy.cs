@@ -23,6 +23,8 @@ public class Enemy : MonoBehaviour
     public Transform player;
     public NavMeshAgent agent;
 
+    public static float damageMultiplier = 1f;
+
     private void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -45,6 +47,11 @@ public class Enemy : MonoBehaviour
         agent.SetDestination(player.position);
     }
 
+    public static void IncreaseDamageMultiplier(float amount)
+    {
+        damageMultiplier += amount;
+    }
+
     public void Damage(int amount)
     {
         if (amount < 0)
@@ -52,7 +59,7 @@ public class Enemy : MonoBehaviour
             throw new System.ArgumentOutOfRangeException("Cannot have negative Damage");
         }
 
-        this.health -= amount;
+        this.health -= (int)(amount * damageMultiplier);
 
         // Change the material to red temporarily
         entitySpriteRenderer.color = redColor;

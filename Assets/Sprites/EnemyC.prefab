@@ -245,5 +245,7 @@ MonoBehaviour:
   redDuration: 1
   health: 120
   xpPrefab: {fileID: 4254291542136982112, guid: 69c959b02c66be244a7688f9a0ba980a, type: 3}
-  speed: 2
+  speed: 1.5
+  player: {fileID: 0}
+  agent: {fileID: 0}
   poisonPrefab: {fileID: 6430859652655100135, guid: df808fda5859c0141800eae610a31dcd, type: 3}

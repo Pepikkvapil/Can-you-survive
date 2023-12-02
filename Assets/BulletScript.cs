@@ -10,7 +10,7 @@ public class BulletScript : MonoBehaviour
     public float force;
 
     private int baseDamage = 5;
-    public static float damageMultiplier = 1f;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -53,7 +53,7 @@ public class BulletScript : MonoBehaviour
         if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy"))
         {
             Enemy health = other.GetComponent<Enemy>();
-            health.Damage((int)(baseDamage * damageMultiplier)); // Apply the damage multiplier
+            health.Damage((int)(baseDamage));
             Destroy(gameObject);
         }
         else if (other.CompareTag("Walls"))
@@ -62,9 +62,5 @@ public class BulletScript : MonoBehaviour
         }
     }
 
-    public static void IncreaseDamageMultiplier(float amount)
-    {
-        damageMultiplier += amount;
-    }
 
 }

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashCost = 20;
     [SerializeField] private float staminaDrain = 0.5f;
     [SerializeField] private float staminaRegen = 0.5f;
+    
     [SerializeField] private int RunSpeed = 6;
     [SerializeField] private int normalRunSpeed = 4;
     [SerializeField] private Image staminaProgressUI = null;
@@ -23,10 +24,11 @@ public class PlayerController : MonoBehaviour
 
     public SpriteRenderer entitySpriteRenderer;
     public Color redColor = Color.red;
-    public float redDuration = 0.5f;
+    public float redDuration = 0.3f;
 
-    [SerializeField] private int health = 100;
-    public int MAX_HEALTH = 100;
+    [SerializeField] private float health = 100.0f;
+    [SerializeField] private float MAX_HEALTH = 100.0f;
+    [SerializeField] private float hpRegen = 0.1f;
 
     private Vector2 _Movement;
     private Rigidbody2D _Rigidbody;
@@ -36,9 +38,24 @@ public class PlayerController : MonoBehaviour
 
     public GameObject bookPrefab; // Assign the book prefab in the Unity Editor
     public Transform firingPointer; // Assign your firing pointer GameObject in the Unity Editor
+
+    //Books
     private List<GameObject> books = new List<GameObject>();
     public float bookDistance = 5f; // Distance of books from the firing pointer
     public int maxBooks = 2; // Start with 2 books
+
+    //Rockets
+    public RocketsWeapon rocketsWeapon;
+
+    //SpellShield
+    private bool spellShield = false;
+    private bool spellShieldReady = false;
+    private float spellShieldCooldown = 10f; // 10 seconds cooldown
+    private float spellShieldTimer = 0f;
+    public GameObject spellShieldPrefab; // Assign this in the Unity Editor
+    private GameObject activeSpellShield;
+    private float minSpellShieldCooldown = 5f; // Minimum cooldown limit
+    private float cooldownDecreaseAmount = 1f; // Cooldown decrease per upgrade
 
     private void Awake()
     {
@@ -96,6 +113,73 @@ public class PlayerController : MonoBehaviour
                 hasRegenerated = true;
             }
         }
+
+        if(health <= MAX_HEALTH - 0.01)
+        {
+            health += hpRegen * Time.deltaTime;
+            UpdateHP();
+        }
+
+    }
+
+    public void EnableSpellShieldUpgrade()
+    {
+        if (spellShieldReady == false && spellShield == false)
+        {
+            spellShield = true;
+            spellShieldReady = true;
+            StartCoroutine(SpellShieldRoutine());
+            Debug.Log("SpellshieldUpgrade získán");
+        }
+        else if (spellShield == true)
+        {
+            DecreaseSpellShieldCooldown();
+        }
+    }
+
+    public void DecreaseSpellShieldCooldown()
+    {
+        if (spellShieldCooldown > minSpellShieldCooldown)
+        {
+            spellShieldCooldown = Mathf.Max(minSpellShieldCooldown, spellShieldCooldown - cooldownDecreaseAmount);
+        }
+    }
+
+    private IEnumerator SpellShieldRoutine()
+    {
+        while (true) // Infinite loop, can be stopped or modified based on game logic
+        {
+            if (spellShieldReady)
+            {
+                ActivateSpellShield();
+                yield return new WaitForSeconds(spellShieldCooldown); // Wait for cooldown
+            }
+            yield return null; // Ensures the coroutine doesn't block the game
+        }
+    }
+
+    private void ActivateSpellShield()
+    {
+        spellShieldReady = false;
+        spellShieldTimer = spellShieldCooldown;
+
+        if (activeSpellShield != null)
+        {
+            Destroy(activeSpellShield); // Remove previous instance if exists
+        }
+
+        //Adjusting position
+        Vector3 shieldPosition = transform.position + new Vector3(-0.26f, 0.027f, 0);
+        activeSpellShield = Instantiate(spellShieldPrefab, shieldPosition, Quaternion.identity, transform);
+    }
+
+
+    public void EnableRocketWeapon()
+    {
+        if (rocketsWeapon != null)
+        {
+            rocketsWeapon.enabled = true;
+        }
     }
 
     public void AddBook()
@@ -150,6 +234,18 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int amount)
     {
+        if (!spellShieldReady)
+        {
+            spellShieldReady = true; // Reactivate the shield for the next cycle
+
+            if (activeSpellShield != null)
+            {
+                Destroy(activeSpellShield); // Remove the spell shield visual
+            }
+
+            return; // Block the damage
+        }
+
         health -= amount;
         entitySpriteRenderer.color = redColor;
         StartCoroutine(RevertColor());
@@ -198,6 +294,7 @@ public class PlayerController : MonoBehaviour
     {
         MAX_HEALTH += increaseAmount;
         health += increaseAmount; // Also increase the current health
+        hpRegen += 0.05f;
         UpdateHP(); // Update the health UI to reflect the new maximum
     }
 

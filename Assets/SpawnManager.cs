@@ -59,6 +59,7 @@ public class SpawnManager : MonoBehaviour
 
     private void StartNextWave()
     {
+        maxEnemiesPerWave++;
         if (currentWave < totalWaves)
         {
             StartWave();
