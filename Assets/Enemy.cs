@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     public Color redColor = Color.red; // Set the desired red color
     public float redDuration = 0.5f; // Adjust the duration as needed
 
-    [SerializeField] private int health = 100;
+    [SerializeField] private int health = 50;
 
     [SerializeField] private GameObject xpPrefab;
 
@@ -24,6 +24,8 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent agent;
 
     public static float damageMultiplier = 1f;
+
+    public bool recentlyHitByLightning = false;
 
     private void Start()
     {

@@ -20,6 +20,7 @@ public class ExperienceManager : MonoBehaviour
     public Button bookButton; // Assign in the Unity Editor
     public Button rocketButton;
     public Button spellShieldButton;
+    public Button lightningButton;
 
     public int maximumExp = 20;
     public int currentExp = 0;
@@ -33,7 +34,8 @@ public class ExperienceManager : MonoBehaviour
         UpgradeType.Health,
         UpgradeType.Book,
         UpgradeType.Rocket,
-        UpgradeType.SpellShield
+        UpgradeType.SpellShield,
+        UpgradeType.Lightning
     };
 
     private void Awake()
@@ -100,6 +102,7 @@ public class ExperienceManager : MonoBehaviour
         bookButton.gameObject.SetActive(false);
         rocketButton.gameObject.SetActive(false);
         spellShieldButton.gameObject.SetActive(false);
+        lightningButton.gameObject.SetActive(false);
 
         foreach (var upgrade in selectedUpgrades)
         {
@@ -122,6 +125,9 @@ public class ExperienceManager : MonoBehaviour
                     break;
                 case UpgradeType.SpellShield:
                     spellShieldButton.gameObject.SetActive(true);
+                    break;
+                case UpgradeType.Lightning:
+                    lightningButton.gameObject.SetActive(true);
                     break;
             }
         }
@@ -168,6 +174,9 @@ public class ExperienceManager : MonoBehaviour
             case "SpellShield":
                 playerController.EnableSpellShieldUpgrade();
                 break;
+            case "Lightning":
+                playerController.EnableLightningWeapon();
+                break;
         }
 
         OnUpgradeSelected();
@@ -187,5 +196,6 @@ public enum UpgradeType
     Health,
     Book,
     Rocket,
-    SpellShield
+    SpellShield,
+    Lightning
 }

@@ -57,6 +57,11 @@ public class PlayerController : MonoBehaviour
     private float minSpellShieldCooldown = 5f; // Minimum cooldown limit
     private float cooldownDecreaseAmount = 1f; // Cooldown decrease per upgrade
 
+    //Lightning
+    public GameObject lightningPrefab; // Assign this in the Unity Editor
+    public float lightningSpawnInterval = 5f; // Initial spawn interval in seconds
+    private float lightningTimer;
+
     private void Awake()
     {
         _Rigidbody = GetComponent<Rigidbody2D>();
@@ -122,6 +127,38 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void EnableLightningWeapon()
+    {
+        if (!IsInvoking(nameof(SpawnLightning)))
+        {
+            InvokeRepeating(nameof(SpawnLightning), lightningSpawnInterval, lightningSpawnInterval);
+        }
+        else
+        {
+            lightningSpawnInterval = Mathf.Max(1f, lightningSpawnInterval - 1f); // Decrease interval, 1 second minimum
+            CancelInvoke(nameof(SpawnLightning));
+            InvokeRepeating(nameof(SpawnLightning), lightningSpawnInterval, lightningSpawnInterval);
+        }
+    }
+
+    private void SpawnLightning()
+    {
+        // Define the range around the player where lightning can spawn
+        float range = 9f; // Adjust this value based on how far from the player you want the lightning to spawn
+
+        // Generate a random position within the range
+        Vector3 offset = new Vector3(Random.Range(-range, range), Random.Range(-range, range), 0);
+        Vector3 spawnPosition = transform.position + offset;
+
+        GameObject lightning = Instantiate(lightningPrefab, spawnPosition, Quaternion.identity);
+        StartCoroutine(ActivateColliderAfterDelay(lightning));
+    }
+
+    private IEnumerator ActivateColliderAfterDelay(GameObject lightning)
+    {
+        yield return new WaitForSeconds(0.35f);
+        lightning.GetComponent<Collider2D>().enabled = true;
+    }
     public void EnableSpellShieldUpgrade()
     {
         if (spellShieldReady == false && spellShield == false)

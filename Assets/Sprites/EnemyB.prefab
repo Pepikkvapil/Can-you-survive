@@ -243,6 +243,8 @@ MonoBehaviour:
   entitySpriteRenderer: {fileID: 5070274834100229812}
   redColor: {r: 1, g: 0, b: 0, a: 1}
   redDuration: 1
-  health: 50
+  health: 40
   xpPrefab: {fileID: 4254291542136982112, guid: 69c959b02c66be244a7688f9a0ba980a, type: 3}
   speed: 3
+  player: {fileID: 0}
+  agent: {fileID: 0}
