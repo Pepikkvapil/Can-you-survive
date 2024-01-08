@@ -28,29 +28,17 @@ public class BulletScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Camera mainCamera = Camera.main;
-
-        if (mainCamera != null)
+        // Check if the bullet is outside the camera's view
+        if (!IsInsideCameraView())
         {
-            float minX = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
-            float maxX = mainCamera.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
-            float minY = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
-            float maxY = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y;
-
-            Vector3 bulletPosition = transform.position;
-
-            // Check if the bullet is outside the camera's view
-            if (bulletPosition.x < minX || bulletPosition.x > maxX || bulletPosition.y < minY || bulletPosition.y > maxY)
-            {
-                // Destroy the bullet when it goes off-camera
-                Destroy(gameObject);
-            }
+            // Destroy the bullet when it goes off-camera
+            Destroy(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy"))
+        if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy")) 
         {
             Enemy health = other.GetComponent<Enemy>();
             health.Damage((int)(baseDamage));
@@ -62,5 +50,16 @@ public class BulletScript : MonoBehaviour
         }
     }
 
+    // Check if the bullet is inside the camera's view
+    bool IsInsideCameraView()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+        {
+            Vector3 viewportPos = mainCamera.WorldToViewportPoint(transform.position);
+            return viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1;
+        }
+        return false;
+    }
 
 }

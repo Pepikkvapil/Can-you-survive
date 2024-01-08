@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     public static float speedMultiplier = 1f;
 
     [SerializeField] private float maxStamina = 100.0f;
-    [SerializeField] private float dashCost = 20;
     [SerializeField] private float staminaDrain = 0.5f;
     [SerializeField] private float staminaRegen = 0.5f;
     
@@ -32,7 +31,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 _Movement;
     private Rigidbody2D _Rigidbody;
-    private bool hasRegenerated = true;
     private bool weAreSprinting = false;
     private bool isDead = false;
 
@@ -40,9 +38,12 @@ public class PlayerController : MonoBehaviour
     public Transform firingPointer; // Assign your firing pointer GameObject in the Unity Editor
 
     //Books
-    private List<GameObject> books = new List<GameObject>();
+    private List<BookWeapon> books = new List<BookWeapon>();
     public float bookDistance = 5f; // Distance of books from the firing pointer
     public int maxBooks = 2; // Start with 2 books
+    private int BookUpgradeCount = 0;
+    
+
 
     //Rockets
     public RocketsWeapon rocketsWeapon;
@@ -50,12 +51,15 @@ public class PlayerController : MonoBehaviour
     //SpellShield
     private bool spellShield = false;
     private bool spellShieldReady = false;
-    private float spellShieldCooldown = 10f; // 10 seconds cooldown
-    private float spellShieldTimer = 0f;
     public GameObject spellShieldPrefab; // Assign this in the Unity Editor
     private GameObject activeSpellShield;
     private float minSpellShieldCooldown = 5f; // Minimum cooldown limit
-    private float cooldownDecreaseAmount = 1f; // Cooldown decrease per upgrade
+    private float cooldownDecreaseAmount = 1f; // Cooldown decrease per upgradeprivate bool shieldOnCooldown = false;
+    private bool shieldOnCooldown = false;
+    private float shieldCooldownDuration = 10f; // 10 seconds cooldown
+    private float shieldCooldownTimer = 0f;
+
+
 
     //Lightning
     public GameObject lightningPrefab; // Assign this in the Unity Editor
@@ -98,7 +102,7 @@ public class PlayerController : MonoBehaviour
 
             if (playerStamina <= 0)
             {
-                hasRegenerated = false;
+                
                 sliderCanvasGroup.alpha = 0;
             }
         }
@@ -115,7 +119,7 @@ public class PlayerController : MonoBehaviour
             if (playerStamina >= maxStamina)
             {
                 sliderCanvasGroup.alpha = 0;
-                hasRegenerated = true;
+                
             }
         }
 
@@ -125,6 +129,16 @@ public class PlayerController : MonoBehaviour
             UpdateHP();
         }
 
+        if (shieldOnCooldown)
+        {
+            shieldCooldownTimer -= Time.deltaTime;
+
+            if (shieldCooldownTimer <= 0)
+            {
+                shieldOnCooldown = false; // End the cooldown
+                ActivateSpellShield(); // Regenerate the shield
+            }
+        }
     }
 
     public void EnableLightningWeapon()
@@ -176,9 +190,9 @@ public class PlayerController : MonoBehaviour
 
     public void DecreaseSpellShieldCooldown()
     {
-        if (spellShieldCooldown > minSpellShieldCooldown)
+        if (shieldCooldownDuration > minSpellShieldCooldown)
         {
-            spellShieldCooldown = Mathf.Max(minSpellShieldCooldown, spellShieldCooldown - cooldownDecreaseAmount);
+            shieldCooldownDuration = Mathf.Max(minSpellShieldCooldown, shieldCooldownDuration - cooldownDecreaseAmount);
         }
     }
 
@@ -189,7 +203,7 @@ public class PlayerController : MonoBehaviour
             if (spellShieldReady)
             {
                 ActivateSpellShield();
-                yield return new WaitForSeconds(spellShieldCooldown); // Wait for cooldown
+                yield return new WaitForSeconds(shieldCooldownDuration); // Wait for cooldown
             }
             yield return null; // Ensures the coroutine doesn't block the game
         }
@@ -197,8 +211,7 @@ public class PlayerController : MonoBehaviour
 
     private void ActivateSpellShield()
     {
-        spellShieldReady = false;
-        spellShieldTimer = spellShieldCooldown;
+        spellShieldReady = true; // Set to true when activating the shield
 
         if (activeSpellShield != null)
         {
@@ -209,6 +222,7 @@ public class PlayerController : MonoBehaviour
         Vector3 shieldPosition = transform.position + new Vector3(-0.26f, 0.027f, 0);
         activeSpellShield = Instantiate(spellShieldPrefab, shieldPosition, Quaternion.identity, transform);
     }
+
 
 
     public void EnableRocketWeapon()
@@ -222,7 +236,10 @@ public class PlayerController : MonoBehaviour
     public void AddBook()
     {
         // Instantiate a new book
-        GameObject newBook = Instantiate(bookPrefab, firingPointer.position, Quaternion.identity, firingPointer);
+        GameObject newBookObject = Instantiate(bookPrefab, firingPointer.position, Quaternion.identity, firingPointer);
+
+        // Get the BookWeapon component from the new book GameObject
+        BookWeapon newBook = newBookObject.GetComponent<BookWeapon>();
 
         // Add the new book to the list
         books.Add(newBook);
@@ -230,6 +247,7 @@ public class PlayerController : MonoBehaviour
         // Update the positions of all books
         UpdateBookPositions();
     }
+
 
     private void UpdateBookPositions()
     {
@@ -247,14 +265,26 @@ public class PlayerController : MonoBehaviour
 
     public void UpgradeBookWeapon()
     {
+        BookWeapon bookWeapon = GetComponent<BookWeapon>();
+
         if(books.Count == 0)
         {
             AddBook();
+            AddBook();
         }
-        if (books.Count != 0)
+        else if (books.Count != 0 && BookUpgradeCount < 5)
         {
             maxBooks++;
+            BookUpgradeCount++;
             AddBook();
+        }
+        else if (books.Count != 0 && BookUpgradeCount >= 4)
+        {
+            foreach (var book in books)
+            {
+                book.ApplyFinalUpgrade();
+            }
+            
         }
     }
 
@@ -271,10 +301,11 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int amount)
     {
-        if (!spellShieldReady)
+        if (spellShieldReady)
         {
-            spellShieldReady = true; // Reactivate the shield for the next cycle
-
+            // If the spell shield is active, block the damage and reset the shield
+            spellShieldReady = false; // Reactivate the shield for the next cycle
+            shieldOnCooldown = true;
             if (activeSpellShield != null)
             {
                 Destroy(activeSpellShield); // Remove the spell shield visual
@@ -283,16 +314,21 @@ public class PlayerController : MonoBehaviour
             return; // Block the damage
         }
 
+        // If the spell shield is not active, deduct the damage from the player's health
         health -= amount;
-        entitySpriteRenderer.color = redColor;
-        StartCoroutine(RevertColor());
+        entitySpriteRenderer.color = redColor; // Change color temporarily to indicate damage
+        StartCoroutine(RevertColor()); // Revert the color back to normal
 
         if (health <= 0 && !isDead)
         {
+            // Handle player death if health reaches zero
             isDead = true;
             Die();
         }
     }
+
+
+
 
     private IEnumerator RevertColor()
     {

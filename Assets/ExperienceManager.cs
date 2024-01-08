@@ -50,6 +50,7 @@ public class ExperienceManager : MonoBehaviour
         }
     }
 
+    
     private void Start()
     {
         levelText.text = "Level: " + currentLevel.ToString();

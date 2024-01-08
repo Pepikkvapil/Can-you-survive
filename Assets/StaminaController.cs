@@ -8,15 +8,14 @@ public class NewBehaviourScript : MonoBehaviour
     public float playerStamina = 100.0f;
 
     [SerializeField] private float maxStamina = 100.0f;
-    [SerializeField] private float dashCost = 20;
+
     [HideInInspector] public bool hasRegenerated = true;
     [HideInInspector] public bool weAreSprinting = false;
 
     [SerializeField] private float staminaDrain = 0.5f;
     [SerializeField] private float staminaRegen = 0.5f;
 
-    [SerializeField] private int slowedRunSpeed = 2;
-    [SerializeField] private int normalRunSpeed = 4;
+
 
     [SerializeField] private Image staminaProgressUI = null; 
     [SerializeField] private CanvasGroup sliderCanvasGroup = null;
@@ -70,15 +69,6 @@ public class NewBehaviourScript : MonoBehaviour
     }
 
 
-    public void StaminaDash()
-    {
-        if(playerStamina >= (maxStamina * dashCost / maxStamina))
-        {
-            playerStamina -= dashCost;
-
-            UpdateStamina(1);
-        }
-    }
 
 
     void UpdateStamina(int value)

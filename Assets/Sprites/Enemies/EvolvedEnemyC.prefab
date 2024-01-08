@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 4517689186199189677}
   - component: {fileID: 3915820913563124486}
   - component: {fileID: -1460471311025049846}
-  - component: {fileID: 7628433473567080877}
+  - component: {fileID: 2679082848142776875}
+  - component: {fileID: -453582072444398282}
   m_Layer: 0
-  m_Name: EnemyB
+  m_Name: EvolvedEnemyC
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,8 +31,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6473977809005963212}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.711, y: 0.162, z: 0}
-  m_LocalScale: {x: 0.25905383, y: 0.27456895, z: 0.20994718}
+  m_LocalPosition: {x: 5.348, y: -0.5132, z: 0}
+  m_LocalScale: {x: 0.50789684, y: 0.53831553, z: 0.41161916}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,12 +79,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 21300000, guid: eb1e3fdf15797b64783779345798986f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c3eface85f0b5db4fbdc77e19238bc56, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.8, y: 19.2}
+  m_Size: {x: 5.12, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -121,18 +122,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.17, y: -0.05}
+  m_Offset: {x: -0.14158285, y: -0.5804356}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.74, y: 5.88}
-    newSize: {x: 10.8, y: 19.2}
+    oldSize: {x: 5.12, y: 5.12}
+    newSize: {x: 5.12, y: 5.12}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 7.22, y: 5.82}
+  m_Size: {x: 3.9686983, y: 4.0689235}
   m_EdgeRadius: 0
 --- !u!50 &4517689186199189677
 Rigidbody2D:
@@ -156,7 +157,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -193,18 +194,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.17, y: -0.05}
+  m_Offset: {x: -0.1483568, y: -0.5804353}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.74, y: 5.88}
-    newSize: {x: 10.8, y: 19.2}
+    oldSize: {x: 5.12, y: 5.12}
+    newSize: {x: 5.12, y: 5.12}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 7.22, y: 5.82}
+  m_Size: {x: 3.9551528, y: 4.0689244}
   m_EdgeRadius: 0
 --- !u!195 &-1460471311025049846
 NavMeshAgent:
@@ -228,7 +229,28 @@ NavMeshAgent:
   m_BaseOffset: 2.94
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &7628433473567080877
+--- !u!95 &2679082848142776875
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6473977809005963212}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8b9f4b61752b2bd459a9c30f3275ed9e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-453582072444398282
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -237,14 +259,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6473977809005963212}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2280980174da20e4fbd474f2fa96f856, type: 3}
+  m_Script: {fileID: 11500000, guid: 771aa314844b6dc419cb2a0720943f96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   entitySpriteRenderer: {fileID: 5070274834100229812}
   redColor: {r: 1, g: 0, b: 0, a: 1}
-  redDuration: 1
-  health: 40
+  redDuration: 0.5
+  health: 300
   xpPrefab: {fileID: 4254291542136982112, guid: 69c959b02c66be244a7688f9a0ba980a, type: 3}
-  speed: 3
+  speed: 2
   player: {fileID: 0}
   agent: {fileID: 0}
+  recentlyHitByLightning: 0
+  evolvedpoisonPrefab: {fileID: 252554661301401975, guid: 8cdde0258875e2242a884e815de6c4a3, type: 3}

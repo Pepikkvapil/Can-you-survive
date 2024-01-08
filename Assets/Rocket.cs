@@ -32,8 +32,6 @@ public class Rocket : MonoBehaviour
         // For a 2D game
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90)); // Adjust the offset if needed
-
-        // For a 3D game, use Quaternion.LookRotation and adjust as necessary
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

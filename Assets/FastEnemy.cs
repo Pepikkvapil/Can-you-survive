@@ -24,6 +24,22 @@ public class FastEnemy : Enemy
     void Update()
     {
         agent.SetDestination(player.position);
+
+        // Calculate the direction to the player
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // Flip the sprite based on player position
+        if (directionToPlayer.x > 0)
+        {
+            // Player is on the right, flip the sprite
+            entitySpriteRenderer.flipX = true;
+        }
+        else if (directionToPlayer.x < 0)
+        {
+            // Player is on the left, unflip the sprite
+            entitySpriteRenderer.flipX = false;
+        }
     }
 
     protected override void Die()

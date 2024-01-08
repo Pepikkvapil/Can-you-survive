@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class BookWeapon : MonoBehaviour
 {
-    public float rotationSpeed = 500f;
+    private float rotationSpeed = 80f;
     public int damage = 10; // Damage that the book deals to enemies
     public Transform rotation;
+    private bool isFinalUpgradeApplied = false;
 
     private void Start()
     {
@@ -34,6 +35,21 @@ public class BookWeapon : MonoBehaviour
             // Deal damage to the enemy
             other.GetComponent<Enemy>()?.Damage(damage);
             // Optionally destroy the book or create some visual effect
+        }
+    }
+
+    public void ApplyFinalUpgrade()
+    {
+        if (!isFinalUpgradeApplied)
+        {
+            // Implement the final upgrade logic here
+            // For example, increase damage significantly, change appearance, or add special abilities
+            damage *= 2; // Double the damage
+            rotationSpeed *= 2;
+
+            // You can also add any other changes or effects you want for the final upgrade
+
+            isFinalUpgradeApplied = true; // Mark the final upgrade as applied
         }
     }
 }

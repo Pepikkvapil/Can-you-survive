@@ -27,6 +27,8 @@ public class Enemy : MonoBehaviour
 
     public bool recentlyHitByLightning = false;
 
+    private bool isDead = false;
+
     private void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -47,6 +49,22 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         agent.SetDestination(player.position);
+
+        // Calculate the direction to the player
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // Flip the sprite based on player position
+        if (directionToPlayer.x > 0)
+        {
+            // Player is on the right, flip the sprite
+            entitySpriteRenderer.flipX = true;
+        }
+        else if (directionToPlayer.x < 0)
+        {
+            // Player is on the left, unflip the sprite
+            entitySpriteRenderer.flipX = false;
+        }
     }
 
     public static void IncreaseDamageMultiplier(float amount)
@@ -72,8 +90,12 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
-            DropXP();
-            Die();
+            if (isDead == false)
+            {
+                Die();
+                isDead = true;
+            }
+            
         }
     }
 
@@ -97,6 +119,7 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Die()
     {
+        DropXP();
         ExperienceManager.Instance.AddKilled();
 
         // Destroy the enemy or perform other cleanup
