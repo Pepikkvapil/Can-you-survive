@@ -9,22 +9,9 @@ public class RocketsWeapon : MonoBehaviour
     private float fireTimer;
     private bool isActive = false; // Flag to track activation
 
-    // Method to upgrade or activate the rocket weapon
-    public void UpgradeRocketWeapon()
-    {
-        if (!isActive)
-        {
-            // Activate the weapon
-            isActive = true;
-            enabled = true; // Enable this script/component if it's initially disabled
-        }
-        else
-        {
-            // Upgrade the weapon
-            rocketDamage += 5; // Increase damage
-            fireInterval = Mathf.Max(fireInterval * 0.9f, 0.5f); // Decrease interval
-        }
-    }
+    public bool isFinalUpgrade = false;
+    public int upgradecount = 0;
+
 
     void Update()
     {
@@ -37,7 +24,51 @@ public class RocketsWeapon : MonoBehaviour
             FireRocket();
             fireTimer = 0;
         }
+
+        IsFinalUpgradeConditionMet();
     }
+
+
+    
+
+
+    public void IsFinalUpgradeConditionMet()
+    {
+        if(upgradecount == 5)
+        isFinalUpgrade = true;
+    }
+    public bool FinalRocketUpgraded = false;
+    
+    // Method to upgrade or activate the rocket weapon
+    public void UpgradeRocketWeapon()
+    {
+        if (!isActive)
+        {
+            // Activate the weapon
+            isActive = true;
+            enabled = true; // Enable this script/component if it's initially disabled
+        }
+        else
+        {
+            // Upgrade the weapon
+            if (isFinalUpgrade == true)
+            {
+                Debug.Log("Finalni upgrade");
+                fireInterval = 1.5f;
+                rocketDamage = Mathf.CeilToInt(rocketDamage * 1.5f);
+                FinalRocketUpgraded = true;
+                //playerController.ApplyFinalRocketUpgrade();
+            }
+            else
+            {
+                upgradecount++;
+                Debug.Log("upgrade cislo " + upgradecount);
+                rocketDamage += 5; // Increase damage
+                fireInterval = Mathf.Max(fireInterval * 0.9f, 0.5f); // Decrease interval
+            }
+        }
+    }
+
 
     void FireRocket()
     {

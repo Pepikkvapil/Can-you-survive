@@ -39,7 +39,7 @@ public class Rocket : MonoBehaviour
         if (collision.CompareTag("Enemy"))
         {
             // Assuming your BookWeapon script deals with damaging the enemy
-            collision.GetComponent<Enemy>()?.Damage(10); // Replace 10 with your desired damage value
+            collision.GetComponent<Enemy>()?.DamagingEnemy(10); // Replace 10 with your desired damage value
             // Add any additional impact effects here
 
             Destroy(gameObject); // Destroy the rocket

@@ -41,7 +41,7 @@ public class BulletScript : MonoBehaviour
         if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy")) 
         {
             Enemy health = other.GetComponent<Enemy>();
-            health.Damage((int)(baseDamage));
+            health.DamagingEnemy((int)(baseDamage));
             Destroy(gameObject);
         }
         else if (other.CompareTag("Walls"))

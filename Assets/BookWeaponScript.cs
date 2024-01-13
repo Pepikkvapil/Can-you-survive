@@ -5,7 +5,7 @@ public class BookWeapon : MonoBehaviour
     private float rotationSpeed = 80f;
     public int damage = 10; // Damage that the book deals to enemies
     public Transform rotation;
-    private bool isFinalUpgradeApplied = false;
+    public bool FinalBookUpgraded = false;
 
     private void Start()
     {
@@ -33,14 +33,14 @@ public class BookWeapon : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             // Deal damage to the enemy
-            other.GetComponent<Enemy>()?.Damage(damage);
+            other.GetComponent<Enemy>()?.DamagingEnemy(damage);
             // Optionally destroy the book or create some visual effect
         }
     }
 
     public void ApplyFinalUpgrade()
     {
-        if (!isFinalUpgradeApplied)
+        if (!FinalBookUpgraded)
         {
             // Implement the final upgrade logic here
             // For example, increase damage significantly, change appearance, or add special abilities
@@ -49,7 +49,9 @@ public class BookWeapon : MonoBehaviour
 
             // You can also add any other changes or effects you want for the final upgrade
 
-            isFinalUpgradeApplied = true; // Mark the final upgrade as applied
+            FinalBookUpgraded = true; // Mark the final upgrade as applied
         }
     }
+
+
 }

@@ -34,7 +34,7 @@ public class OutwardBullet : MonoBehaviour
         if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy"))
         {
             Enemy health = other.GetComponent<Enemy>();
-            health.Damage(damage);
+            health.DamagingEnemy(damage);
             Destroy(gameObject);
         }
         else if (other.CompareTag("Walls"))

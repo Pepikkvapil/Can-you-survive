@@ -7,7 +7,8 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-
+    public int meleeDmg = 10;
+    public float damageMultiplier = 1f;
 
     public SpriteRenderer entitySpriteRenderer; // Assign the entity's SpriteRenderer component in the Inspector
     public Color redColor = Color.red; // Set the desired red color
@@ -17,13 +18,14 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private GameObject xpPrefab;
 
+    PlayerController playerController;
 
     public float speed = 2f;
 
     public Transform player;
     public NavMeshAgent agent;
 
-    public static float damageMultiplier = 1f;
+    public static float selfDamageMultiplier = 1f;
 
     public bool recentlyHitByLightning = false;
 
@@ -67,19 +69,38 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public static void IncreaseDamageMultiplier(float amount)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        damageMultiplier += amount;
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerController.Damage(meleeDmg);
+        }
     }
 
-    public void Damage(int amount)
+    public void UpdateStatsBasedOnWave(int wave)
+    {
+        // Example: You can increase health and damage based on the wave number
+        int healthIncrease = wave * 2; // Adjust as needed
+        float damageMultiplierIncrease = wave * 0.1f; // Adjust as needed
+
+        // Apply the updates
+        health += healthIncrease;
+        damageMultiplier += damageMultiplierIncrease;
+    }
+
+    public static void IncreaseDamageTakenMultiplier(float amount)
+    {
+        selfDamageMultiplier += amount;
+    }
+
+    public void DamagingEnemy(int amount)
     {
         if (amount < 0)
         {
             throw new System.ArgumentOutOfRangeException("Cannot have negative Damage");
         }
 
-        this.health -= (int)(amount * damageMultiplier);
+        this.health -= (int)(amount * selfDamageMultiplier);
 
         // Change the material to red temporarily
         entitySpriteRenderer.color = redColor;
@@ -120,7 +141,7 @@ public class Enemy : MonoBehaviour
     protected virtual void Die()
     {
         DropXP();
-        ExperienceManager.Instance.AddKilled();
+        ExperienceManager.Instance.AddKilled(); 
 
         // Destroy the enemy or perform other cleanup
         Debug.Log("DEAD!");

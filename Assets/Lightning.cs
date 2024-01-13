@@ -18,7 +18,7 @@ public class LightningScript : MonoBehaviour
             Enemy enemyController = other.GetComponent<Enemy>();
             if (!enemyController.recentlyHitByLightning)
             {
-                enemyController.Damage(damage);
+                enemyController.DamagingEnemy(damage);
             }
         }
     }

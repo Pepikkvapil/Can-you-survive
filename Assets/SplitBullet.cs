@@ -42,7 +42,7 @@ public class SplitBullet : MonoBehaviour
         if (other.GetComponent<Enemy>() != null && other.CompareTag("Enemy"))
         {
             Enemy health = other.GetComponent<Enemy>();
-            health.Damage((int)(baseDamage));
+            health.DamagingEnemy((int)(baseDamage));
             SpawnOutwardBullets();
             Destroy(gameObject);
         }

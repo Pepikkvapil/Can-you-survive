@@ -28,7 +28,7 @@ public class ShootingEnemy : Enemy
         agent.updateUpAxis = false;
     }
 
-    protected new void Update()
+    protected void Update()
     {
         agent.SetDestination(player.position);
 
@@ -57,7 +57,7 @@ public class ShootingEnemy : Enemy
         }
     }
 
-    protected new void Shoot()
+    protected void Shoot()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 

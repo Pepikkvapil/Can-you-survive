@@ -13,6 +13,10 @@ public class ExperienceManager : MonoBehaviour
     public GameObject upgradeWindow; 
 
     public PlayerController playerController;
+    RocketsWeapon rocketsWeapon;
+    BookWeapon bookWeapon;
+
+
 
     public Button overallDamageButton; // Assign in the Unity Editor
     public Button speedButton; // Assign in the Unity Editor
@@ -26,6 +30,9 @@ public class ExperienceManager : MonoBehaviour
     public int currentExp = 0;
     public int currentLevel = 0;
     public int killedEnemies = 0;
+
+    bool isRocketFinalUpgrade = false;
+    bool isBookFinalUpgrade = false;
 
     private List<UpgradeType> allUpgrades = new List<UpgradeType>()
     {
@@ -63,6 +70,36 @@ public class ExperienceManager : MonoBehaviour
         GetCurrentFill(currentExp);
         levelText.text = "Level: " + currentLevel.ToString();
         killedText.text = "Enemies killed: " + killedEnemies.ToString();
+
+        if(rocketsWeapon == null)
+            rocketsWeapon = FindObjectOfType<RocketsWeapon>();
+        
+
+        if(bookWeapon == null)
+            bookWeapon = FindObjectOfType<BookWeapon>();
+
+
+        // Check and set the final upgrade flags
+        if (rocketsWeapon != null)
+        {
+            isRocketFinalUpgrade = rocketsWeapon.FinalRocketUpgraded;
+        }
+        if (bookWeapon != null)
+        {
+            isBookFinalUpgrade = bookWeapon.FinalBookUpgraded;
+        }
+
+        // Remove final upgrades from the list
+        if (isRocketFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.Rocket);
+            Debug.Log("Rocket upgrade removed from options");
+        }
+        if (isBookFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.Book);
+            Debug.Log("Book upgrade removed from options");
+        }
     }
 
     public void AddExperience(int amount)
@@ -95,8 +132,9 @@ public class ExperienceManager : MonoBehaviour
 
     private void ShowUpgradeOptions()
     {
-        List<UpgradeType> selectedUpgrades = PickRandomUpgrades(3);
+       List<UpgradeType> selectedUpgrades = PickRandomUpgrades(3);
 
+        // Reset all buttons to inactive
         overallDamageButton.gameObject.SetActive(false);
         speedButton.gameObject.SetActive(false);
         healthButton.gameObject.SetActive(false);
@@ -105,6 +143,7 @@ public class ExperienceManager : MonoBehaviour
         spellShieldButton.gameObject.SetActive(false);
         lightningButton.gameObject.SetActive(false);
 
+        // Activate buttons based on remaining upgrades in the list
         foreach (var upgrade in selectedUpgrades)
         {
             switch (upgrade)
@@ -137,6 +176,8 @@ public class ExperienceManager : MonoBehaviour
         Time.timeScale = 0f; // Pause the game
     }
 
+
+
     private List<UpgradeType> PickRandomUpgrades(int numberOfUpgrades)
     {
         List<UpgradeType> shuffledList = new List<UpgradeType>(allUpgrades);
@@ -160,7 +201,7 @@ public class ExperienceManager : MonoBehaviour
                 playerController.IncreaseSpeedMultiplier(0.1f);
                 break;
             case "Damage":
-                Enemy.IncreaseDamageMultiplier(0.1f); // Increase by 20% for example
+                Enemy.IncreaseDamageTakenMultiplier(0.1f); 
                 break;
             case "Health":
                 playerController.IncreaseMaxHealth(20);

@@ -49,7 +49,7 @@ public class PierceBullet : MonoBehaviour
             // Check if the enemy has not been hit by this bullet before
             if (!hitEnemies.Contains(enemy))
             {
-                enemy.Damage(baseDamage);
+                enemy.DamagingEnemy(baseDamage);
                 hitEnemies.Add(enemy);
 
                 // Destroy the bullet if it has hit all eligible enemies

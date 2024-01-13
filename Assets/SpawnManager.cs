@@ -57,6 +57,17 @@ public class SpawnManager : MonoBehaviour
         currentWave++;
         waveText.text = "Wave " + currentWave;
 
+        // Call the UpdateStatsBasedOnWave method for each enemy type
+        foreach (GameObject enemyPrefab in enemyPool1)
+        {
+            enemyPrefab.GetComponent<Enemy>().UpdateStatsBasedOnWave(currentWave);
+        }
+        foreach (GameObject enemyPrefab in enemyPool2)
+        {
+            enemyPrefab.GetComponent<Enemy>().UpdateStatsBasedOnWave(currentWave);
+        }
+        // Repeat this for all enemy pools
+
         // Determine which pool of enemies to use based on the current wave
         GameObject[] chosenEnemyPool = GetEnemyPoolForWave(currentWave);
 
@@ -74,6 +85,7 @@ public class SpawnManager : MonoBehaviour
 
         isWaveActive = true;
     }
+
 
     private void StartNextWave()
     {
