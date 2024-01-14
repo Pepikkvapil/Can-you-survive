@@ -13,10 +13,11 @@ public class ExperienceManager : MonoBehaviour
     public GameObject upgradeWindow; 
 
     public PlayerController playerController;
+
     RocketsWeapon rocketsWeapon;
     BookWeapon bookWeapon;
-
-
+    LightningScript lightningweapon;
+    
 
     public Button overallDamageButton; // Assign in the Unity Editor
     public Button speedButton; // Assign in the Unity Editor
@@ -30,9 +31,16 @@ public class ExperienceManager : MonoBehaviour
     public int currentExp = 0;
     public int currentLevel = 0;
     public int killedEnemies = 0;
+    public int damageupgrades = 0;
 
     bool isRocketFinalUpgrade = false;
     bool isBookFinalUpgrade = false;
+    bool isSpeedFinalUpgrade = false;
+    bool isLightningFinalUpgrade = false;
+    bool isHealthFinalUpgrade = false;
+    bool isSpellShieldFinalUpgrade = false;
+    bool isDamageFinalUpgrade = false;
+
 
     private List<UpgradeType> allUpgrades = new List<UpgradeType>()
     {
@@ -78,6 +86,8 @@ public class ExperienceManager : MonoBehaviour
         if(bookWeapon == null)
             bookWeapon = FindObjectOfType<BookWeapon>();
 
+        if (lightningweapon == null)
+            lightningweapon = FindObjectOfType<LightningScript>();
 
         // Check and set the final upgrade flags
         if (rocketsWeapon != null)
@@ -88,6 +98,14 @@ public class ExperienceManager : MonoBehaviour
         {
             isBookFinalUpgrade = bookWeapon.FinalBookUpgraded;
         }
+        if (lightningweapon != null)
+        {
+            isLightningFinalUpgrade = playerController.lightningupgraded;
+        }
+
+        isHealthFinalUpgrade = playerController.upgradedhealth;
+        isSpeedFinalUpgrade = playerController.upgradedspeed;
+        isSpellShieldFinalUpgrade = playerController.spellshieldupgraded;
 
         // Remove final upgrades from the list
         if (isRocketFinalUpgrade)
@@ -99,6 +117,31 @@ public class ExperienceManager : MonoBehaviour
         {
             allUpgrades.Remove(UpgradeType.Book);
             Debug.Log("Book upgrade removed from options");
+        }
+        if(isSpeedFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.Speed);
+            Debug.Log("Speed upgrade removed from options");
+        }
+        if (isLightningFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.Lightning);
+            Debug.Log("Lightning upgrade removed from options");
+        }
+        if (isHealthFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.Health);
+            Debug.Log("Health upgrade removed from options");
+        }
+        if (isSpellShieldFinalUpgrade)
+        {
+            allUpgrades.Remove(UpgradeType.SpellShield);
+            Debug.Log("SpellShield upgrade removed from options");
+        }
+        if (damageupgrades == 5)
+        {
+            allUpgrades.Remove(UpgradeType.OverallDamage);
+            Debug.Log("OverallDamage upgrade removed from options");
         }
     }
 
@@ -201,10 +244,11 @@ public class ExperienceManager : MonoBehaviour
                 playerController.IncreaseSpeedMultiplier(0.1f);
                 break;
             case "Damage":
-                Enemy.IncreaseDamageTakenMultiplier(0.1f); 
+                Enemy.IncreaseDamageTakenMultiplier(0.1f);
+                damageupgrades++;
                 break;
             case "Health":
-                playerController.IncreaseMaxHealth(20);
+                playerController.IncreaseMaxHealth();
                 break;
             case "Book":
                 playerController.UpgradeBookWeapon();

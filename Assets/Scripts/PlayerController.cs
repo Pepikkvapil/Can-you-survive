@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private int RunSpeed = 6;
     [SerializeField] private int normalRunSpeed = 4;
+    public bool upgradedspeed = false;
     [SerializeField] private Image staminaProgressUI = null;
     [SerializeField] private CanvasGroup sliderCanvasGroup = null;
     [SerializeField] private Image HPProgressUI = null;
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float health = 100.0f;
     [SerializeField] private float MAX_HEALTH = 100.0f;
     [SerializeField] private float hpRegen = 0.1f;
+    public bool upgradedhealth = false;
+    private int healthupgrades = 0;
 
     private Vector2 _Movement;
     private Rigidbody2D _Rigidbody;
@@ -58,13 +61,17 @@ public class PlayerController : MonoBehaviour
     private bool shieldOnCooldown = false;
     private float shieldCooldownDuration = 10f; // 10 seconds cooldown
     private float shieldCooldownTimer = 0f;
-
+    private int spellshieldupgrades = 0;
+    public bool spellshieldupgraded = false;
 
 
     //Lightning
     public GameObject lightningPrefab; // Assign this in the Unity Editor
     public float lightningSpawnInterval = 5f; // Initial spawn interval in seconds
     private float lightningTimer;
+    public bool lightningupgraded = false;
+    private int lightingupgrades = 0;
+    LightningScript lightningweapon;
 
     private void Awake()
     {
@@ -78,6 +85,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (lightningweapon == null)
+            lightningweapon = FindObjectOfType<LightningScript>();
+
         UpdateHP();
 
         if (playerStamina <= 0)
@@ -139,7 +149,30 @@ public class PlayerController : MonoBehaviour
                 ActivateSpellShield(); // Regenerate the shield
             }
         }
+
+        if(speedupgrade == 5)
+        {
+            upgradedspeed = true;
+        }
+
+        if(lightingupgrades == 5)
+        {
+            lightningupgraded = true;
+        }
+
+        if(healthupgrades == 5)
+        {
+            upgradedhealth = true;
+        }
+
+        if(spellshieldupgrades == 5)
+        {
+            spellshieldupgraded = true;
+        }
     }
+
+ 
+    
 
     public void EnableLightningWeapon()
     {
@@ -147,8 +180,15 @@ public class PlayerController : MonoBehaviour
         {
             InvokeRepeating(nameof(SpawnLightning), lightningSpawnInterval, lightningSpawnInterval);
         }
+        else if (lightingupgrades == 4)
+        {
+            lightningSpawnInterval = 1f;
+            lightningweapon.damage = 100000;
+            lightingupgrades++;
+        }
         else
         {
+            lightingupgrades++;
             lightningSpawnInterval = Mathf.Max(1f, lightningSpawnInterval - 1f); // Decrease interval, 1 second minimum
             CancelInvoke(nameof(SpawnLightning));
             InvokeRepeating(nameof(SpawnLightning), lightningSpawnInterval, lightningSpawnInterval);
@@ -190,6 +230,7 @@ public class PlayerController : MonoBehaviour
 
     public void DecreaseSpellShieldCooldown()
     {
+        spellshieldupgrades++;
         if (shieldCooldownDuration > minSpellShieldCooldown)
         {
             shieldCooldownDuration = Mathf.Max(minSpellShieldCooldown, shieldCooldownDuration - cooldownDecreaseAmount);
@@ -367,17 +408,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
+    private float increaseAmount;
     // Method to increase the player's maximum health
-    public void IncreaseMaxHealth(int increaseAmount)
+    public void IncreaseMaxHealth()
     {
-        MAX_HEALTH += increaseAmount;
-        health += increaseAmount; // Also increase the current health
-        hpRegen += 0.05f;
+        healthupgrades++;
+        increaseAmount = MAX_HEALTH / 100 * 25;
+        health += increaseAmount;
+        hpRegen += 0.1f;
         UpdateHP(); // Update the health UI to reflect the new maximum
     }
 
+    private int speedupgrade = 0;
+
     public void IncreaseSpeedMultiplier(float amount)
     {
+        speedupgrade++;
         speedMultiplier += amount;
     }
 }
