@@ -143,7 +143,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6473977809005963212}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -241,6 +241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2280980174da20e4fbd474f2fa96f856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meleeDmg: 10
+  damageMultiplier: 1
   entitySpriteRenderer: {fileID: 5070274834100229812}
   redColor: {r: 0.8773585, g: 0.5338644, b: 0.5338644, a: 1}
   redDuration: 1
@@ -260,7 +262,7 @@ Animator:
   m_GameObject: {fileID: 6473977809005963212}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8c9b2f8c83d73f74b8960b6e51dbe4c4, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6317d449d68ad0e45b24cf94a8ee01e5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

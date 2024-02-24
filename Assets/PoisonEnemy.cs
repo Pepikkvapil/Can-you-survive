@@ -19,10 +19,6 @@ public class PoisonEnemy : Enemy
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-
-
-
-
     }
 
     private void Update()

@@ -26,6 +26,7 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent agent;
 
     public static float selfDamageMultiplier = 1f;
+    public static float oldSelfDamageMultiplier = 1f;
 
     public bool recentlyHitByLightning = false;
 
@@ -33,40 +34,16 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
-        // Check if the playerObject is not null before accessing its transform
-        if (playerObject != null)
-        {
-            player = playerObject.transform;
-        }
-
-        agent = GetComponent<NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
+        if(playerController == null)
+            playerController = FindAnyObjectByType<PlayerController>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        agent.SetDestination(player.position);
-
-        // Calculate the direction to the player
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        // Flip the sprite based on player position
-        if (directionToPlayer.x > 0)
-        {
-            // Player is on the right, flip the sprite
-            entitySpriteRenderer.flipX = true;
-        }
-        else if (directionToPlayer.x < 0)
-        {
-            // Player is on the left, unflip the sprite
-            entitySpriteRenderer.flipX = false;
-        }
+        if (playerController == null)
+            playerController = FindAnyObjectByType<PlayerController>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -93,7 +70,17 @@ public class Enemy : MonoBehaviour
         selfDamageMultiplier += amount;
     }
 
-    public void DamagingEnemy(int amount)
+    public IEnumerator ApplyDamageUpgrade(float multiplier, float duration)
+    {
+        oldSelfDamageMultiplier = selfDamageMultiplier;
+        selfDamageMultiplier += multiplier; // Increase the damage
+
+        yield return new WaitForSeconds(duration); // Wait for the effect to wear off
+
+        selfDamageMultiplier = oldSelfDamageMultiplier; // Reset the damage back to original
+    }
+
+    public virtual void DamagingEnemy(int amount)
     {
         if (amount < 0)
         {
@@ -137,6 +124,7 @@ public class Enemy : MonoBehaviour
             Instantiate(xpPrefab, transform.position, Quaternion.identity);
         }
     }
+
 
     protected virtual void Die()
     {

@@ -8,7 +8,7 @@ public class EvolvedShootingEnemy : ShootingEnemy
 
     private int bulletsShot = 0;
     private bool isWaiting = false;
-    private float lastShotTime;
+    private float lastShootTime;
     private float lastWaitTime;
 
     private new void Update()
@@ -23,19 +23,19 @@ public class EvolvedShootingEnemy : ShootingEnemy
                 // Reset the waiting state and shot count
                 isWaiting = false;
                 bulletsShot = 0;
-                lastShotTime = Time.time;
+                lastShootTime = Time.time;
             }
         }
         else if (bulletsShot < bulletsToShoot)
         {
             // Check if enough time has passed since the last shot
-            if (Time.time - lastShotTime >= timeBetweenShots)
+            if (Time.time - lastShootTime >= timeBetweenShots)
             {
                 // Shoot a bullet in the direction of the player
                 Shoot();
                 bulletsShot++;
 
-                lastShotTime = Time.time;
+                lastShootTime = Time.time;
 
                 // If all bullets are shot, enter the waiting state
                 if (bulletsShot >= bulletsToShoot)

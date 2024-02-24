@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -27,7 +28,7 @@ public class PlayerController : MonoBehaviour
     public float redDuration = 0.3f;
 
     [SerializeField] private float health = 100.0f;
-    [SerializeField] private float MAX_HEALTH = 100.0f;
+    [SerializeField] public float MAX_HEALTH = 100.0f;
     [SerializeField] private float hpRegen = 0.1f;
     public bool upgradedhealth = false;
     private int healthupgrades = 0;
@@ -40,6 +41,8 @@ public class PlayerController : MonoBehaviour
     public GameObject bookPrefab; // Assign the book prefab in the Unity Editor
     public Transform firingPointer; // Assign your firing pointer GameObject in the Unity Editor
 
+    private int damageupgrades = 0;
+
     //Books
     private List<BookWeapon> books = new List<BookWeapon>();
     public float bookDistance = 5f; // Distance of books from the firing pointer
@@ -50,6 +53,7 @@ public class PlayerController : MonoBehaviour
 
     //Rockets
     public RocketsWeapon rocketsWeapon;
+    public int rocketupgrades = 0;
 
     //SpellShield
     private bool spellShield = false;
@@ -73,6 +77,17 @@ public class PlayerController : MonoBehaviour
     private int lightingupgrades = 0;
     LightningScript lightningweapon;
 
+    //stats
+    public TextMeshProUGUI healthText;
+    public TextMeshProUGUI speedText;
+    public TextMeshProUGUI damageText;
+    public TextMeshProUGUI rocketText;
+    public TextMeshProUGUI lightningText;
+    public TextMeshProUGUI bookText;
+    public TextMeshProUGUI shieldText;
+
+    ExperienceManager experienceManager;
+
     private void Awake()
     {
         _Rigidbody = GetComponent<Rigidbody2D>();
@@ -85,6 +100,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (experienceManager == null)
+            experienceManager = FindObjectOfType<ExperienceManager>();
+
         if (lightningweapon == null)
             lightningweapon = FindObjectOfType<LightningScript>();
 
@@ -169,10 +187,25 @@ public class PlayerController : MonoBehaviour
         {
             spellshieldupgraded = true;
         }
+
+        rocketupgrades = rocketsWeapon.upgradecount;
+
+        damageupgrades = experienceManager.damageupgrades;
+
+        UpdateHUD(healthupgrades, speedupgrade, damageupgrades, rocketupgrades, lightingupgrades, BookUpgradeCount, spellshieldupgrades);
     }
 
- 
-    
+    public void UpdateHUD(int health, int speed, int damage, int rocket, int lightning, int book, int shield)
+    {
+        healthText.text = health.ToString() + "/5";
+        speedText.text = speed.ToString() + "/5";
+        damageText.text = damage.ToString() + "/5";
+        rocketText.text = rocket.ToString() + "/5";
+        lightningText.text = lightning.ToString() + "/5";
+        bookText.text = book.ToString() + "/5";
+        shieldText.text = shield.ToString() + "/5";
+    }
+
 
     public void EnableLightningWeapon()
     {

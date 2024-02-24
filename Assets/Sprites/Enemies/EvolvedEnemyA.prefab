@@ -143,7 +143,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6473977809005963212}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -262,6 +262,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030d574268b5aae4db69249f4d0b3a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meleeDmg: 10
+  damageMultiplier: 1
   entitySpriteRenderer: {fileID: 5070274834100229812}
   redColor: {r: 1, g: 0, b: 0, a: 1}
   redDuration: 0.5

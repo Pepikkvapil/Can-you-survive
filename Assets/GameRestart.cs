@@ -9,8 +9,8 @@ public class GameRestart : MonoBehaviour
 
     public void ResetTheGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        print("button work");
+        SceneManager.LoadScene("MenuScene");
+        SceneManager.UnloadSceneAsync("SampleScene");
     }
 
 

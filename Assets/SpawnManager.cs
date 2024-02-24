@@ -20,18 +20,24 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] enemyPool6; // pool 6
     public GameObject[] enemyPool7; // pool 7
     public GameObject[] enemyPool8; // pool 8
+    public GameObject[] enemyPool9; // pool 8
 
-    public int pool1StartWave = 1; // Wave using pool 1
-    public int pool2StartWave = 25; // Wave using pool 2
-    public int pool3StartWave = 50; // Wave using pool 3
-    public int pool4StartWave = 75; // Wave using pool 4
-    public int pool5StartWave = 100; // Wave using pool 5
-    public int pool6StartWave = 125; // Wave using pool 6
-    public int pool7StartWave = 150; // Wave using pool 7
-    public int pool8StartWave = 175; // Wave using pool 8
+    public int pool1StartWave;
+    public int pool2StartWave;
+    public int pool3StartWave;
+    public int pool4StartWave;
+    public int pool5StartWave;
+    public int pool6StartWave;
+    public int pool7StartWave;
+    public int pool8StartWave;
+    public int pool9StartWave;
 
     private int currentWave = 0;
     private bool isWaveActive = false;
+
+    public GameObject Boss;
+
+    private int BossWave = 25;
 
     private void Start()
     {
@@ -71,16 +77,25 @@ public class SpawnManager : MonoBehaviour
         // Determine which pool of enemies to use based on the current wave
         GameObject[] chosenEnemyPool = GetEnemyPoolForWave(currentWave);
 
-        for (int i = 0; i < maxEnemiesPerWave; i++)
+        if (currentWave == BossWave)
         {
+            BossWave += 10;
             Vector3 spawnPosition = GetSpawnPositionOutsideCameraView();
+            Instantiate(Boss, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            for (int i = 0; i < maxEnemiesPerWave; i++)
+            {
+                Vector3 spawnPosition = GetSpawnPositionOutsideCameraView();
 
-            // Randomly pick an enemy type from the chosen pool
-            int randomIndex = Random.Range(0, chosenEnemyPool.Length);
-            GameObject chosenEnemyPrefab = chosenEnemyPool[randomIndex];
+                // Randomly pick an enemy type from the chosen pool
+                int randomIndex = Random.Range(0, chosenEnemyPool.Length);
+                GameObject chosenEnemyPrefab = chosenEnemyPool[randomIndex];
 
-            // Instantiate the chosen enemy at the calculated spawn position
-            Instantiate(chosenEnemyPrefab, spawnPosition, Quaternion.identity);
+                // Instantiate the chosen enemy at the calculated spawn position
+                Instantiate(chosenEnemyPrefab, spawnPosition, Quaternion.identity);
+            }
         }
 
         isWaveActive = true;

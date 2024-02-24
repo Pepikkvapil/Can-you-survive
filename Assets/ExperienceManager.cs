@@ -19,10 +19,10 @@ public class ExperienceManager : MonoBehaviour
     LightningScript lightningweapon;
     
 
-    public Button overallDamageButton; // Assign in the Unity Editor
-    public Button speedButton; // Assign in the Unity Editor
-    public Button healthButton; // Assign in the Unity Editor
-    public Button bookButton; // Assign in the Unity Editor
+    public Button overallDamageButton; //Assigning buttons in the Unity Editor
+    public Button speedButton; 
+    public Button healthButton; 
+    public Button bookButton; 
     public Button rocketButton;
     public Button spellShieldButton;
     public Button lightningButton;
@@ -41,6 +41,10 @@ public class ExperienceManager : MonoBehaviour
     bool isSpellShieldFinalUpgrade = false;
     bool isDamageFinalUpgrade = false;
 
+    public GameObject rocketPanel;
+    public GameObject lightningPanel;
+    public GameObject bookPanel;
+    public GameObject shieldPanel;
 
     private List<UpgradeType> allUpgrades = new List<UpgradeType>()
     {
@@ -252,16 +256,20 @@ public class ExperienceManager : MonoBehaviour
                 break;
             case "Book":
                 playerController.UpgradeBookWeapon();
+                bookPanel.SetActive(true);
                 break;
             case "Rockets":
                 playerController.rocketsWeapon.UpgradeRocketWeapon();
                 playerController.EnableRocketWeapon();
+                rocketPanel.SetActive(true);
                 break;
             case "SpellShield":
                 playerController.EnableSpellShieldUpgrade();
+                shieldPanel.SetActive(true);
                 break;
             case "Lightning":
                 playerController.EnableLightningWeapon();
+                lightningPanel.SetActive(true);
                 break;
         }
 
